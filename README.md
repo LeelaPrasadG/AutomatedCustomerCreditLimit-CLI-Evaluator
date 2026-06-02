@@ -8,14 +8,14 @@ This system uses multiple agents to autonomously retrieve internal financial dat
 ### 1. The Autonomous Loop Workflow
 
 * **Step 1: Intent Recognition & Initial Tool Selection**
-    [cite_start]The system receives a request: *"Should we increase customer #12345’s credit limit to $10,000?"* The **Orchestrator Agent** identifies this requires internal data and external validation[cite: 30, 43].
+    [cite_start]The system receives a request: *"Should we increase customer #12345’s credit limit to $10,000?"* The **Orchestrator Agent** identifies this requires internal data and external validation.
 
 * **Step 2: Database Call (Internal Grounding)**
-    [cite_start]The **Data Agent** executes a database call to retrieve the customer's payment history and current limit from an internal SQL database[cite: 43]. 
+    [cite_start]The **Data Agent** executes a database call to retrieve the customer's payment history and current limit from an internal SQL database. 
 
 * **Step 3: Agentic RAG (Policy Context)**
-    The **Policy Agent** uses RAG to search the company’s "Credit Risk Manual." [cite_start]It doesn't just retrieve text; it evaluates if the retrieved policy specifically covers requests for $10,000+[cite: 43].
-    * [cite_start]**Iteration:** If the retrieved text is vague, the agent autonomously modifies the search query to look for "high-value limit exceptions"[cite: 43, 284].
+    The **Policy Agent** uses RAG to search the company’s "Credit Risk Manual." [cite_start]It doesn't just retrieve text; it evaluates if the retrieved policy specifically covers requests for $10,000+.
+    * [cite_start]**Iteration:** If the retrieved text is vague, the agent autonomously modifies the search query to look for "high-value limit exceptions".
 
 * **Step 4: API Call (External Verification)**
     The **Validation Agent** calls an external Credit Bureau API (e.g., Experian) to get a real-time credit score.
@@ -23,22 +23,22 @@ This system uses multiple agents to autonomously retrieve internal financial dat
 * **Step 5: The Iterative Control Loop (Condition Satisfaction)**
     The **Orchestrator** compares all inputs:
     * **Condition:** *Internal History = Good* AND *Credit Score = 750+* AND *Policy = Allowed.*
-    * **Loop Trigger:** If the Credit Score API returns a "Thin File" (not enough data), the agent doesn't stop. [cite_start]It autonomously triggers a **Database Call** for the customer's linked savings account balance to see if that can substitute for a credit score[cite: 30, 285].
+    * **Loop Trigger:** If the Credit Score API returns a "Thin File" (not enough data), the agent doesn't stop. [cite_start]It autonomously triggers a **Database Call** for the customer's linked savings account balance to see if that can substitute for a credit score.
 
 * **Step 6: Structured Output Generation**
-    [cite_start]Once all conditions are satisfied, the system uses **Pydantic** and a **JSON schema** to output the final decision in a machine-readable format for the banking core to execute[cite: 19, 20, 22].
+    [cite_start]Once all conditions are satisfied, the system uses **Pydantic** and a **JSON schema** to output the final decision in a machine-readable format for the banking core to execute.
 
 ### 2. Architectural Comparison
 
 | Component | Role in the Use Case | Reliability Mechanism |
 | :--- | :--- | :--- |
-| **Agentic RAG** | [cite_start]Analyzes complex, shifting credit policy documents[cite: 43]. | [cite_start]**Citation Enforcement:** Ensures the "Approval" is based on a specific manual section[cite: 42]. |
-| **Database Calls** | Fetches deterministic facts like account balance and tenure. | [cite_start]**JSON Schema:** Ensures the SQL result is correctly mapped to the agent's logic[cite: 20]. |
-| **API Calls** | Fetches live external risk data. | [cite_start]**Internal Retry Loops:** If the API times out, the agent retries or seeks alternative data[cite: 24, 25]. |
-| **Autonomous Loop** | [cite_start]Decides if more data (like secondary accounts) is needed[cite: 30]. | [cite_start]**Temperature 0:** Ensures logical consistency rather than creative guessing[cite: 27, 28]. |
+| **Agentic RAG** | [cite_start]Analyzes complex, shifting credit policy documents. | [cite_start]**Citation Enforcement:** Ensures the "Approval" is based on a specific manual section. |
+| **Database Calls** | Fetches deterministic facts like account balance and tenure. | [cite_start]**JSON Schema:** Ensures the SQL result is correctly mapped to the agent's logic. |
+| **API Calls** | Fetches live external risk data. | [cite_start]**Internal Retry Loops:** If the API times out, the agent retries or seeks alternative data. |
+| **Autonomous Loop** | [cite_start]Decides if more data (like secondary accounts) is needed[cite: 30]. | [cite_start]**Temperature 0:** Ensures logical consistency rather than creative guessing. |
 
 ### 3. Why this is "Agentic"
-[cite_start]Unlike a standard script that would simply crash if a credit score was missing, this **Agentic System** recognizes the "missing information" as a roadblock[cite: 43]. [cite_start]It autonomously navigates back to the **Database** or **RAG context** to find a compliant workaround before generating the final structured output[cite: 284, 285].
+[cite_start]Unlike a standard script that would simply crash if a credit score was missing, this **Agentic System** recognizes the "missing information" as a roadblock. [cite_start]It autonomously navigates back to the **Database** or **RAG context** to find a compliant workaround before generating the final structured output.
 
 
 
